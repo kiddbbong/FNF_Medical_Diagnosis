@@ -11,7 +11,6 @@ Requirements
 Usage
 -----
 * Download pre-trained Model Parameters Here.
-  * https://drive.google.com/file/d/1lQ8RMwRtGqn4c603QrzDA37Zfud-ghJl/view?usp=sharing
   * https://docs.google.com/uc?export=download&id=1lQ8RMwRtGqn4c603QrzDA37Zfud-ghJl
 
 https://drive.google.com/drive/folders/1dqUJUcHzX2TGoDuze2tSVHBxf7DIDja3?usp=sharing
