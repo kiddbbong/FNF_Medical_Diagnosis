@@ -40,8 +40,8 @@ args = parser.parse_args()
 SPLIT = False
 split_numb = 4
 
-LOG_FILE = './hanyang_log.txt'
-BEST_FILE = './hanyang_best_log.txt'
+LOG_FILE = './log.txt'
+BEST_FILE = './best_log.txt'
 
 BATCH_SIZE = 8
 TEST_BATCH = 1

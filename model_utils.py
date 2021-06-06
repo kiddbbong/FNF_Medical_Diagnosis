@@ -101,19 +101,15 @@ def resize_spatial_attention(input_feature, stride, stage_numb, name):
 		B, H, W, C = concat.get_shape() #get original size
 		
 		if stage_numb == 1:
-			print('STAGE WORK:', stage_numb)
 			concat = avr_pool(concat, (3, 3), stride) #decrease size
 			concat = avr_pool(concat, (3, 3), stride)
 			concat = avr_pool(concat, (3, 3), stride)
 		elif stage_numb == 2:
-			print('STAGE WORK:', stage_numb)
 			concat = avr_pool(concat, (3, 3), stride)
 			concat = avr_pool(concat, (3, 3), stride)
 		elif stage_numb == 3:
-			print('STAGE WORK:', stage_numb)
 			concat = avr_pool(concat, (3, 3), stride)
 		else:
-			print('STAGE WORK:', stage_numb)
 			concat = concat
 		
 		concat = tf.layers.conv2d(concat, filters=1, kernel_size=[kernel_size,kernel_size], strides=[1,1],padding="same", activation=None, kernel_initializer=kernel_initializer, use_bias=False, name='conv')
@@ -130,176 +126,6 @@ def resize_spatial_attention(input_feature, stride, stage_numb, name):
 
 ################################################################################# Blocks #######################################################
 
-def identity_block(name, feature, ch_out, fir_stride, stage_numb, is_training, reuse = False):
-	with tf.name_scope(name):
-		feature_tmp = conv('conv1', feature, ch_out, fir_stride, kernel_size=1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn1')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv2', feature_tmp, ch_out, 1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv3', feature_tmp, ch_out*4, 1, kernel_size=1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		
-		if fir_stride == 2 or stage_numb == 1:
-			feature = conv('conv_short', feature, ch_out*4, fir_stride, kernel_size=1)
-			feature = Batch_Normalization(feature, training=is_training, scope=name+'/bn_short')
-			feature_out = relu(feature_tmp + feature)
-		else:
-			feature_out = relu(feature_tmp + feature)
-
-	return feature_out
-
-def CBAM_identity_block(name, feature, ch_out, fir_stride, stage_numb, is_training, reuse = False):
-	with tf.name_scope(name):
-		feature_tmp = conv('conv1', feature, ch_out, fir_stride, kernel_size=1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn1')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv2', feature_tmp, ch_out, 1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv3', feature_tmp, ch_out*4, 1, kernel_size=1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		feature_tmp = cbam_block(feature_tmp, name=name+'/cbam')
-		
-		if fir_stride == 2 or stage_numb == 1:
-			feature = conv('conv_short', feature, ch_out*4, fir_stride, kernel_size=1)
-			feature = Batch_Normalization(feature, training=is_training, scope=name+'/bn_short')
-			feature_out = relu(feature_tmp + feature)
-		else:
-			feature_out = relu(feature_tmp + feature)
-
-	return feature_out
-
-def CBAM_Only_Spatial_identity_block(name, feature, ch_out, fir_stride, stage_numb, is_training, reuse = False):
-	with tf.name_scope(name):
-		feature_tmp = conv('conv1', feature, ch_out, fir_stride, kernel_size=1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn1')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv2', feature_tmp, ch_out, 1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv3', feature_tmp, ch_out*4, 1, kernel_size=1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		feature_tmp = spatial_attention(feature_tmp, name+'sp_at')
-		
-		if fir_stride == 2 or stage_numb == 1:
-			feature = conv('conv_short', feature, ch_out*4, fir_stride, kernel_size=1)
-			feature = Batch_Normalization(feature, training=is_training, scope=name+'/bn_short')
-			feature_out = relu(feature_tmp + feature)
-		else:
-			feature_out = relu(feature_tmp + feature)
-
-	return feature_out
-
-def Resize_Attention_identity_block(name, feature, ch_out, fir_stride, stage_numb, is_training, reuse = False):
-	with tf.name_scope(name):
-		feature_tmp = conv('conv1', feature, ch_out, fir_stride, kernel_size=1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn1')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv2', feature_tmp, ch_out, 1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv3', feature_tmp, ch_out*4, 1, kernel_size=1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		feature_tmp = channel_attention(feature_tmp, name + 'ch_at')
-		feature_tmp = resize_spatial_attention(feature_tmp, 2, stage_numb, name+'/resize_att')
-		
-		if fir_stride == 2 or stage_numb == 1:
-			feature = conv('conv_short', feature, ch_out*4, fir_stride, kernel_size=1)
-			feature = Batch_Normalization(feature, training=is_training, scope=name+'/bn_short')
-			feature_out = relu(feature_tmp + feature)
-		else:
-			feature_out = relu(feature_tmp + feature)
-
-	return feature_out
-
-def Only_Resize_Attention_identity_block(name, feature, ch_out, fir_stride, stage_numb, is_training, reuse = False):
-	with tf.name_scope(name):
-		feature_tmp = conv('conv1', feature, ch_out, fir_stride, kernel_size=1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn1')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv2', feature_tmp, ch_out, 1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv3', feature_tmp, ch_out*4, 1, kernel_size=1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		feature_tmp = resize_spatial_attention(feature_tmp, 2, stage_numb, name+'/resize_att')
-		
-		if fir_stride == 2 or stage_numb == 1:
-			feature = conv('conv_short', feature, ch_out*4, fir_stride, kernel_size=1)
-			feature = Batch_Normalization(feature, training=is_training, scope=name+'/bn_short')
-			feature_out = relu(feature_tmp + feature)
-		else:
-			feature_out = relu(feature_tmp + feature)
-
-	return feature_out
-
-
-def residual_block(name, feature, ch_out, fir_stride, stage_numb, is_training, reuse = False):
-	with tf.name_scope(name):
-		feature_tmp = conv('conv1', feature, ch_out, fir_stride)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn1')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv2', feature_tmp, ch_out, 1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		
-		if fir_stride == 2:
-			feature_out = relu(feature_tmp)
-		else:
-			feature_out = relu(feature_tmp + feature)
-
-	return feature_out
-
-
-def CBAM_residual_block(name, feature, ch_out, fir_stride, stage_numb, is_training, reuse = False):
-	with tf.name_scope(name):
-		feature_tmp = conv('conv1', feature, ch_out, fir_stride)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn1')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv2', feature_tmp, ch_out, 1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		feature_tmp = cbam_block(feature_tmp, name=name+'/cbam')
-		
-		if fir_stride == 2:
-			feature_out = relu(feature_tmp)
-		else:
-			feature_out = relu(feature_tmp + feature)
-
-	return feature_out
-
-def CBAM_Only_Spatial_residual_block(name, feature, ch_out, fir_stride, stage_numb, is_training, reuse = False):
-	with tf.name_scope(name):
-		feature_tmp = conv('conv1', feature, ch_out, fir_stride)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn1')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv2', feature_tmp, ch_out, 1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		feature_tmp = spatial_attention(feature_tmp, name+'sp_at')
-		
-		if fir_stride == 2:
-			feature_out = relu(feature_tmp)
-		else:
-			feature_out = relu(feature_tmp + feature)
-
-	return feature_out
-
-def Resize_Attention_residual_block(name, feature, ch_out, fir_stride, stage_numb, is_training, reuse = False):
-	with tf.name_scope(name):
-		feature_tmp = conv('conv1', feature, ch_out, fir_stride)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn1')
-		feature_tmp = relu(feature_tmp)
-		feature_tmp = conv('conv2', feature_tmp, ch_out, 1)
-		feature_tmp = Batch_Normalization(feature_tmp, training=is_training, scope=name+'/bn2')
-		feature_tmp = channel_attention(feature_tmp, name + 'ch_at')
-		feature_tmp = resize_spatial_attention(feature_tmp, 2, stage_numb, name+'/resize_att')
-		
-		if fir_stride == 2:
-			feature_out = relu(feature_tmp)
-		else:
-			feature_out = relu(feature_tmp + feature)
-
-	return feature_out
 
 def Only_Resize_Attention_residual_block(name, feature, ch_out, fir_stride, stage_numb, is_training, reuse = False):
 	with tf.name_scope(name):

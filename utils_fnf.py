@@ -101,164 +101,6 @@ def label_crop(img_path):
 		
 	return img_label
 
-def load_test_img(width, height):
-	valid_path_list = get_all_img_paths(Valid_Data)
-	test_path_list = get_all_img_paths(Test_Data)
-	external_path_list = get_all_img_paths(External_Data)
-	valid_path_list.sort()
-	test_path_list.sort()
-	external_path_list.sort()
-		
-	#### Image Value ####
-	valid_value_list = []
-	test_value_list = []
-	external_value_list = []
-	#### Label Value ####
-	valid_label_list = []
-	test_label_list = []
-	external_label_list = []
-		
-	for i in range(len(valid_path_list)):
-		img = Image.open(valid_path_list[i])
-		label = label_crop(valid_path_list[i])
-		w, h = img.size
-		mid_h = int(h//2)
-		area_h = int((w//2))
-		img = img.crop((0, mid_h - area_h, w, mid_h + area_h))
-		# Here Is CONVERT
-		if img.mode != 'RGB':
-			np_img = np.asarray(img)
-			img_1 = np.expand_dims(np_img, axis=2)
-			img_2 = np.expand_dims(np_img, axis=2)
-			img_3 = np.expand_dims(np_img, axis=2)
-			second_img = np.concatenate([img_1, img_2], axis=2)
-			last_img = np.concatenate([second_img, img_3], axis=2)
-			conv_img = Image.fromarray(last_img)
-			img = conv_img.resize((width, height))
-		else:
-			img = img.resize((width, height))
-			
-		valid_value_list.append(img)
-		valid_label_list.append(label)
-
-
-	for j in range(len(test_path_list)):
-		img = Image.open(test_path_list[j])
-		label = label_crop(test_path_list[j])
-		w, h = img.size
-		mid_h = int(h//2)
-		area_h = int((w//2))
-		img = img.crop((0, mid_h - area_h, w, mid_h + area_h))
-		# Here Is CONVERT
-		if img.mode != 'RGB':
-			img = np.asarray(img)
-			img_1 = np.expand_dims(img, axis=2)
-			img_2 = np.expand_dims(img, axis=2)
-			img_3 = np.expand_dims(img, axis=2)
-			second_img = np.concatenate([img_1, img_2], axis=2)
-			last_img = np.concatenate([second_img, img_3], axis=2)
-			conv_img = Image.fromarray(last_img)
-			img = conv_img.resize((width, height))
-		else:
-			img = img.resize((width, height))
-		
-		test_value_list.append(img)
-		test_label_list.append(label)
-		
-	for k in range(len(external_path_list)):
-		img = Image.open(external_path_list[k])
-		label = label_crop(external_path_list[k])
-		w, h = img.size
-		mid_h = int(h//2)
-		area_h = int((w//2))
-		img = img.crop((0, mid_h - area_h, w, mid_h + area_h))
-		# Here Is CONVERT
-		if img.mode != 'RGB':
-			img = np.asarray(img)
-			img_1 = np.expand_dims(img, axis=2)
-			img_2 = np.expand_dims(img, axis=2)
-			img_3 = np.expand_dims(img, axis=2)
-			second_img = np.concatenate([img_1, img_2], axis=2)
-			last_img = np.concatenate([second_img, img_3], axis=2)
-			conv_img = Image.fromarray(last_img)
-			img = conv_img.resize((width, height))
-		else:
-			img = img.resize((width, height))
-		
-		external_value_list.append(img)
-		external_label_list.append(label)
-		
-	return valid_path_list, test_path_list, external_path_list, valid_value_list, test_value_list, external_value_list, valid_label_list, test_label_list, external_label_list
-
-def sub_load_img(width, height, split_numb, SPLIT=False):
-	train_path_list = get_all_img_paths(Train_Data)
-	valid_path_list = get_all_img_paths(Valid_Data)
-	train_path_list.sort()
-	valid_path_list.sort()
-	
-	if SPLIT==True:
-		train_path_list, normal_numb = split_data(train_path_list, split_numb)
-		valid_path_list, _ = split_data(valid_path_list, split_numb)
-		
-	else:
-		train_path_list, normal_numb = split_data(train_path_list, 4)
-		valid_path_list, _ = split_data(valid_path_list, 4)
-		
-	
-	train_value_list = []
-	valid_value_list = []
-	
-	train_label_list = []
-	valid_label_list = []
-	
-	for i in range(len(train_path_list)):
-		img = Image.open(train_path_list[i])
-		label = label_crop(train_path_list[i])
-		w, h = img.size
-		mid_h = int(h//2)
-		area_h = int((w//2))
-		img = img.crop((0, mid_h - area_h, w, mid_h + area_h))
-		# Here Is CONVERT
-		if img.mode != 'RGB':
-			np_img = np.asarray(img)
-			img_1 = np.expand_dims(np_img, axis=2)
-			img_2 = np.expand_dims(np_img, axis=2)
-			img_3 = np.expand_dims(np_img, axis=2)
-			second_img = np.concatenate([img_1, img_2], axis=2)
-			last_img = np.concatenate([second_img, img_3], axis=2)
-			conv_img = Image.fromarray(last_img)
-			img = conv_img.resize((width, height))
-		else:
-			img = img.resize((width, height))
-			
-		train_value_list.append(img)
-		train_label_list.append(label)
-		
-	for j in range(len(valid_path_list)):
-		img = Image.open(valid_path_list[j])
-		label = label_crop(valid_path_list[j])
-		w, h = img.size
-		mid_h = int(h//2)
-		area_h = int((w//2))
-		img = img.crop((0, mid_h - area_h, w, mid_h + area_h))
-		# Here Is CONVERT
-		if img.mode != 'RGB':
-			np_img = np.asarray(img)
-			img_1 = np.expand_dims(np_img, axis=2)
-			img_2 = np.expand_dims(np_img, axis=2)
-			img_3 = np.expand_dims(np_img, axis=2)
-			second_img = np.concatenate([img_1, img_2], axis=2)
-			last_img = np.concatenate([second_img, img_3], axis=2)
-			conv_img = Image.fromarray(last_img)
-			img = conv_img.resize((width, height))
-		else:
-			img = img.resize((width, height))
-			
-		valid_value_list.append(img)
-		valid_label_list.append(label)
-		
-	return train_path_list, valid_path_list, train_value_list, valid_value_list, train_label_list, valid_label_list, normal_numb
-	
 # In[6]:
 def load_img(width, height, split_numb, SPLIT=False):
 	train_path_list = get_all_img_paths(Train_Data)
@@ -397,8 +239,6 @@ def get_batch(BATCH_SIZE, PATH_LIST, VALUE_LIST, LABEL_LIST, normal_numb, test_i
 			img = VALUE_LIST[test_idx]
 			label = LABEL_LIST[test_idx]
 			
-			img = img.transpose(method=PIL.Image.ROTATE_90)
-			
 			w, h = img.size
 			img = img.crop((25, 25, w - 25, h - 25))
 
@@ -457,6 +297,36 @@ def get_batch(BATCH_SIZE, PATH_LIST, VALUE_LIST, LABEL_LIST, normal_numb, test_i
 			batch_label = np.concatenate([batch_label, label], axis=0)
 			
 	return batch_img, batch_label, img_path
+
+
+
+def inference_si(img_path, width, height):
+	img = Image.open(img_path)
+	w, h = img.size
+	mid_h = int(h//2)
+	area_h = int((w//2))
+	img = img.crop((0, mid_h - area_h, w, mid_h + area_h))
+	# Here Is CONVERT
+	if img.mode != 'RGB':
+		np_img = np.asarray(img)
+		img_1 = np.expand_dims(np_img, axis=2)
+		img_2 = np.expand_dims(np_img, axis=2)
+		img_3 = np.expand_dims(np_img, axis=2)
+		second_img = np.concatenate([img_1, img_2], axis=2)
+		last_img = np.concatenate([second_img, img_3], axis=2)
+		conv_img = Image.fromarray(last_img)
+		img = conv_img.resize((width, height))
+	else:
+		img = img.resize((width, height))
+			
+	w, h = img.size
+	img = img.crop((25, 25, w - 25, h - 25))
+	
+	np_img = np.asarray(img)
+	
+	img_data = np.expand_dims(np_img, axis=0)
+	
+	return img_data
 
 
 # In[ ]:
