@@ -10,5 +10,5 @@ Requirements
 
 Usage
 -----
-* Download pre-trained Model Parameters
-  https://drive.google.com/drive/folders/1dqUJUcHzX2TGoDuze2tSVHBxf7DIDja3?usp=sharing
+* Download pre-trained Model Parameters Here.
+  * https://drive.google.com/drive/folders/1dqUJUcHzX2TGoDuze2tSVHBxf7DIDja3?usp=sharing
