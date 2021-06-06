@@ -16,5 +16,5 @@ Usage
 * You can feed given samples (__./samples/__) or your own image using the following commands.
 
     python inference_fnf.py --img_path [file_name]
-    
+
 * You can feed given samples (__./samples/__) or your own image using the following commands.
