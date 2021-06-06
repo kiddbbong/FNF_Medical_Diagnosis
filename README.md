@@ -6,3 +6,4 @@ Requirements
 ------------
 1. Python 3.5.2
 2. Tensorflow 1.14.0
+3. Pillow 7.1.1
