@@ -13,4 +13,6 @@ Usage
 * Download pre-trained Model Parameters Here.
   * https://drive.google.com/drive/folders/1dqUJUcHzX2TGoDuze2tSVHBxf7DIDja3?usp=sharing
 
-* You can feed given samples (__./samples__) or your own image using the following commands.
+* You can feed given samples (__./samples/__) or your own image using the following commands.
+
+  python inference_fnf.py --img_path [file_name]
