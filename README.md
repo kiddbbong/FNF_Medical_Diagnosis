@@ -11,9 +11,8 @@ Requirements
 Usage
 -----
 * Download pre-trained Model Parameters Here.
-  * https://docs.google.com/uc?export=download&id=1lQ8RMwRtGqn4c603QrzDA37Zfud-ghJl
 
-https://drive.google.com/drive/folders/1dqUJUcHzX2TGoDuze2tSVHBxf7DIDja3?usp=sharing
+  * https://docs.google.com/uc?export=download&id=1lQ8RMwRtGqn4c603QrzDA37Zfud-ghJl
 
 * You can feed given samples (__./samples/__) or your own image using the following commands.
 
