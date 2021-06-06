@@ -15,6 +15,6 @@ Usage
 
 * You can feed given samples (__./samples/__) or your own image using the following commands.
 
-    python inference_fnf.py --img_path [file_name]
+    python inference_fnf.py --img_path [File_Path] --checkpoint [Directory_Path]
 
-* You can feed given samples (__./samples/__) or your own image using the following commands.
+* Do not use given samples (__./samples/__) for any other purpose.
